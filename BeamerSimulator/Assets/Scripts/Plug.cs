@@ -1,21 +1,20 @@
-using System;
 using UnityEngine;
 
 public class Plug : MonoBehaviour
 {
 	private BoxCollider _boxCollider;
+	public ConnectorType connector;
 
 	private void Start()
 	{
 		_boxCollider = GetComponent<BoxCollider>();
 	}
-	
+
 	private void OnMouseDrag()
 	{
 		float distanceToScreen = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
-		transform.position =
-			Camera.main.ScreenToWorldPoint(
-				new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToScreen));
+		Vector3 mousePos = new(Input.mousePosition.x, Input.mousePosition.y, distanceToScreen);
+		transform.position = Camera.main.ScreenToWorldPoint(mousePos);
 		_boxCollider.enabled = false;
 	}
 
@@ -26,6 +25,9 @@ public class Plug : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		Console.WriteLine("Wos gehtn?");
+		if (other.GetComponent<Socket>().connector == connector)
+		{
+			transform.position = other.transform.position;
+		}
 	}
 }
